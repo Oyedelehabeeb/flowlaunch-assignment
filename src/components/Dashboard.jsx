@@ -1,12 +1,26 @@
-import { Filter, List, Plus, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { Filter, List, Plus, Menu, X, Search } from "lucide-react";
+import { useMemo, useState } from "react";
 import AddTask from "./AddTask";
 import TaskTable from "./TaskTable";
+import { useTaskQuery } from "../hooks/useTask";
 
 function Dashboard() {
+  const { data: tasks } = useTaskQuery();
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [activeView, setActiveView] = useState("taskTable");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const countTask = useMemo(() => {
+    if (!tasks) return { All: 0, "To Do": 0, "In Progress": 0, Done: 0 };
+    return {
+      All: tasks?.length,
+      "To Do": tasks.filter((task) => task.status === "To Do")?.length,
+      "In Progress": tasks.filter((task) => task.status === "In Progress")
+        ?.length,
+      Done: tasks.filter((task) => task.status === "Done")?.length,
+    };
+  }, [tasks]);
 
   const filterOptions = ["All", "To Do", "In Progress", "Done"];
 
@@ -91,24 +105,37 @@ function Dashboard() {
           </div>
         )}
 
-        {/* Dropdown filter */}
-        <div className="mb-6 flex items-center space-x-4">
-          <Filter className="text-indigo-600 hidden sm:block" />
-          <select
-            value={selectedFilter}
-            onChange={(e) => setSelectedFilter(e.target.value)}
-            className="w-full sm:w-auto px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          >
-            {filterOptions.map((filter) => (
-              <option key={filter} value={filter}>
-                {filter}
-              </option>
-            ))}
-          </select>
+        {/* Search input and dropdown filter. */}
+        <div className="mb-6 flex flex-col sm:flex-row items-center gap-4">
+          <div className="flex items-center w-full sm:w-auto bg-white border rounded-md px-3 py-2 focus-within:ring-2 focus-within:ring-indigo-500">
+            <Search className="text-indigo-600" />
+            <input
+              type="text"
+              placeholder="Search tasks..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="ml-2 w-full sm:w-auto outline-none"
+            />
+          </div>
+
+          <div className="flex items-center w-full sm:w-auto">
+            <Filter className="text-indigo-600 hidden sm:block" />
+            <select
+              value={selectedFilter}
+              onChange={(e) => setSelectedFilter(e.target.value)}
+              className="w-full sm:w-auto px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              {filterOptions.map((filter) => (
+                <option key={filter} value={filter}>
+                  {filter} ({countTask[filter]})
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {activeView === "taskTable" ? (
-          <TaskTable selectedFilter={selectedFilter} />
+          <TaskTable selectedFilter={selectedFilter} searchTerm={searchTerm} />
         ) : (
           <AddTask />
         )}

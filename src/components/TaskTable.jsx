@@ -7,7 +7,7 @@ import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import Spinner from "./Spinner";
 import PageNotFound from "./PageNotFound";
 
-const TaskTable = ({ selectedFilter = "All" }) => {
+const TaskTable = ({ selectedFilter = "All", searchTerm = "" }) => {
   const { data: tasks, isLoading, error } = useTaskQuery();
   const updateTaskMutation = useUpdateTask();
   const deleteTaskMutation = useDeleteTask();
@@ -23,9 +23,22 @@ const TaskTable = ({ selectedFilter = "All" }) => {
 
   const filteredTasks = useMemo(() => {
     if (!tasks) return [];
-    if (selectedFilter === "All") return tasks;
-    return tasks.filter((task) => task.status === selectedFilter);
-  }, [tasks, selectedFilter]);
+
+    let filtered =
+      selectedFilter === "All"
+        ? tasks
+        : tasks.filter((task) => task.status === selectedFilter);
+
+    if (searchTerm.trim() !== "") {
+      filtered = filtered.filter(
+        (task) =>
+          task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          task.description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    return filtered;
+  }, [tasks, selectedFilter, searchTerm]);
 
   const tableConfig = useMemo(
     () => ({
@@ -36,7 +49,7 @@ const TaskTable = ({ selectedFilter = "All" }) => {
         {
           title: "Task ID",
           field: "id",
-          width: 100,
+          width: 80,
         },
         {
           title: "Title",
