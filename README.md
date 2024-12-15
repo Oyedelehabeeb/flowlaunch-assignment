@@ -1,8 +1,15 @@
-# React + Vite
+FlowLaunch task manager is a web application that can be used to manage task. 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Feature: 
+- Task management and organisation 
 
-Currently, two official plugins are available:
+Technology:
+- JavaScript
+- React.js
+- Tailwind CSS
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Tool:
+- Tabulator Tables: for task table display
+- React hot toast: for display of toast (notification)
+- React modal: for creating modal
+- Tailwind CSS: for creating aesthetic User Interface and responsiveness 
