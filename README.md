@@ -10,6 +10,7 @@ Technology:
 
 Tool:
 - Tabulator Tables: for task table display
+- React Query: for state management 
 - React hot toast: for display of toast (notification)
 - React modal: for creating modal
 - Tailwind CSS: for creating aesthetic User Interface and responsiveness 
